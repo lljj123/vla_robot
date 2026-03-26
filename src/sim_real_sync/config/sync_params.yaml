@@ -1,0 +1,18 @@
+cmd_timeout: 0.5
+control_rate: 30.0
+
+topics:
+  cmd_vel_in: "/cmd_vel"
+  sim_odom: "/sim/odom"
+  real_odom: "/real/odom"
+  sim_cmd_vel_out: "/sim/cmd_vel"
+  real_cmd_vel_out: "/real/cmd_vel"
+  sync_error_out: "/sync/error"
+
+gains:
+  kp_lin: 0.8
+  kp_yaw: 1.2
+
+limits:
+  max_corr_lin: 0.25
+  max_corr_ang: 0.6

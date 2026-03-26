@@ -1,0 +1,8 @@
+<launch>
+  <rosparam file="$(find sim_real_sync)/config/sync_params.yaml" command="load"/>
+
+  <node pkg="sim_real_sync"
+        type="sync_controller.py"
+        name="sim_real_sync_controller"
+        output="screen"/>
+</launch>

@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>sim_real_sync</name>
+  <version>0.1.0</version>
+  <description>Sync Gazebo and real robot motion in ROS1.</description>
+
+  <maintainer email="you@todo.com">tong</maintainer>
+  <license>MIT</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <depend>rospy</depend>
+  <depend>geometry_msgs</depend>
+  <depend>nav_msgs</depend>
+  <depend>std_msgs</depend>
+
+  <export/>
+</package>
