@@ -1,0 +1,25 @@
+<launch>
+  <!-- TurtleBot3 model: burger / waffle / waffle_pi -->
+  <arg name="model" default="burger" />
+
+  <!-- Start Gazebo simulation -->
+  <include file="$(find turtlebot3_gazebo)/launch/turtlebot3_world.launch">
+    <arg name="model" value="$(arg model)"/>
+  </include>
+
+  <!-- Start navigation (map + amcl + move_base) -->
+  <!-- Note: turtlebot3_navigation provides nav launch; map is required for amcl. -->
+  <!-- We'll start a simple empty map by default; you can replace with your own. -->
+  <arg name="map_file" default="$(find vla_nav)/maps/demo.yaml" />
+
+  <include file="$(find turtlebot3_navigation)/launch/turtlebot3_navigation.launch">
+    <arg name="model" value="$(arg model)"/>
+    <arg name="map_file" value="$(arg map_file)"/>
+  </include>
+
+  <!-- VLA Nav node (subscribe camera + command -> publish goal) -->
+  <node pkg="vla_nav" type="vla_nav_node.py" name="vla_nav" output="screen">
+    <remap from="~image" to="/camera/rgb/image_raw" />
+    <param name="frame_id" value="map" />
+  </node>
+</launch>

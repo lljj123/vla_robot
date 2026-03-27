@@ -1,0 +1,78 @@
+<?xml version="1.0"?>
+<robot name="sim_sync_car" xmlns:xacro="http://www.ros.org/wiki/xacro">
+  <material name="gray">
+    <color rgba="0.4 0.4 0.4 1.0"/>
+  </material>
+  <material name="blue">
+    <color rgba="0.2 0.4 0.9 1.0"/>
+  </material>
+  <material name="green">
+    <color rgba="0.2 0.8 0.3 1.0"/>
+  </material>
+
+  <link name="base_link">
+    <visual>
+      <origin xyz="0 0 0.08" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.35 0.22 0.12"/>
+      </geometry>
+      <material name="gray"/>
+    </visual>
+  </link>
+
+  <link name="camera_link">
+    <visual>
+      <geometry>
+        <box size="0.05 0.05 0.05"/>
+      </geometry>
+      <material name="blue"/>
+    </visual>
+  </link>
+  <joint name="camera_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="camera_link"/>
+    <origin xyz="0.12 0 0.16" rpy="0 0 0"/>
+  </joint>
+
+  <link name="imu_link">
+    <visual>
+      <geometry>
+        <box size="0.03 0.03 0.02"/>
+      </geometry>
+      <material name="green"/>
+    </visual>
+  </link>
+  <joint name="imu_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="imu_link"/>
+    <origin xyz="0 0 0.14" rpy="0 0 0"/>
+  </joint>
+
+  <link name="laser_link">
+    <visual>
+      <geometry>
+        <cylinder radius="0.03" length="0.04"/>
+      </geometry>
+      <material name="blue"/>
+    </visual>
+  </link>
+  <joint name="laser_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="laser_link"/>
+    <origin xyz="0.15 0 0.14" rpy="0 0 0"/>
+  </joint>
+
+  <link name="arm_base_link">
+    <visual>
+      <geometry>
+        <cylinder radius="0.04" length="0.08"/>
+      </geometry>
+      <material name="green"/>
+    </visual>
+  </link>
+  <joint name="arm_base_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="arm_base_link"/>
+    <origin xyz="-0.08 0 0.18" rpy="0 0 0"/>
+  </joint>
+</robot>

@@ -28,6 +28,9 @@ class SyncController:
     def __init__(self):
         self.cmd_timeout = rospy.get_param("~cmd_timeout", rospy.get_param("/cmd_timeout", 0.5))
         self.control_rate = rospy.get_param("~control_rate", rospy.get_param("/control_rate", 30.0))
+        self.urdf_dir = rospy.get_param("~urdf_dir", "")
+        self.urdf_file = rospy.get_param("~urdf_file", "")
+        self.robot_description_param = rospy.get_param("~robot_description_param", "/robot_description")
 
         topics = rospy.get_param("~topics", rospy.get_param("/topics", {}))
         gains = rospy.get_param("~gains", rospy.get_param("/gains", {}))
@@ -63,6 +66,12 @@ class SyncController:
 
         rospy.loginfo("sim_real_sync_controller started.")
         rospy.loginfo("cmd_in=%s sim_odom=%s real_odom=%s", self.t_cmd_in, self.t_sim_odom, self.t_real_odom)
+        rospy.loginfo(
+            "urdf_dir=%s urdf_file=%s robot_description_param=%s",
+            self.urdf_dir,
+            self.urdf_file,
+            self.robot_description_param,
+        )
 
     def cb_cmd(self, msg):
         self.last_cmd = msg

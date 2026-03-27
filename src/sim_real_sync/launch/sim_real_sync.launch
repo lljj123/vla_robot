@@ -1,8 +1,81 @@
 <launch>
-  <rosparam file="$(find sim_real_sync)/config/sync_params.yaml" command="load"/>
+  <arg name="cmd_vel_in" default="/cmd_vel"/>
+  <arg name="urdf_dir" default="$(find sim_real_sync)/urdf"/>
+  <arg name="urdf_file" default="robot.urdf.xacro"/>
+  <arg name="robot_description_param" default="/robot_description"/>
+  <arg name="launch_rviz" default="true"/>
+  <arg name="rviz_config" default="$(find sim_real_sync)/rviz/sim_real_sync.rviz"/>
+  <arg name="rviz_fixed_frame" default="map"/>
+  <arg name="rviz_camera_topic" default="/camera/image_raw"/>
+  <arg name="rviz_imu_topic" default="/imu/data"/>
+  <arg name="rviz_lidar_topic" default="/scan"/>
+  <arg name="rviz_arm_joint_states_topic" default="/joint_states"/>
+
+  <include file="$(find vla_nav)/launch/vla_nav_tb3_gazebo.launch">
+    <arg name="model" value="burger"/>
+  </include>
+
+  <param name="robot_description" command="$(find xacro)/xacro $(arg urdf_dir)/$(arg urdf_file)"/>
+
+  <group ns="sim_real_sync_rviz">
+    <param name="camera_topic" value="$(arg rviz_camera_topic)"/>
+    <param name="imu_topic" value="$(arg rviz_imu_topic)"/>
+    <param name="lidar_topic" value="$(arg rviz_lidar_topic)"/>
+    <param name="arm_joint_states_topic" value="$(arg rviz_arm_joint_states_topic)"/>
+    <param name="fixed_frame" value="$(arg rviz_fixed_frame)"/>
+    <param name="robot_description_param" value="$(arg robot_description_param)"/>
+  </group>
 
   <node pkg="sim_real_sync"
         type="sync_controller.py"
         name="sim_real_sync_controller"
-        output="screen"/>
+        output="screen">
+    <rosparam command="load" file="$(find sim_real_sync)/config/sync_params.yaml"/>
+    <param name="topics/cmd_vel_in" value="$(arg cmd_vel_in)"/>
+    <param name="urdf_dir" value="$(arg urdf_dir)"/>
+    <param name="urdf_file" value="$(arg urdf_file)"/>
+    <param name="robot_description_param" value="$(arg robot_description_param)"/>
+  </node>
+
+  <group if="$(arg launch_rviz)">
+    <node pkg="robot_state_publisher"
+          type="robot_state_publisher"
+          name="rviz_robot_state_publisher"
+          output="screen">
+      <remap from="joint_states" to="$(arg rviz_arm_joint_states_topic)"/>
+    </node>
+
+    <node pkg="sim_real_sync"
+          type="cmd_vel_marker.py"
+          name="rviz_cmd_marker"
+          output="screen">
+      <param name="cmd_vel_topic" value="$(arg cmd_vel_in)"/>
+      <param name="marker_topic" value="/rviz/cmd_marker"/>
+      <param name="frame_id" value="base_link"/>
+    </node>
+
+    <node pkg="topic_tools"
+          type="relay"
+          name="rviz_camera_relay"
+          args="$(arg rviz_camera_topic) /rviz/camera/image"
+          output="screen"/>
+
+    <node pkg="topic_tools"
+          type="relay"
+          name="rviz_imu_relay"
+          args="$(arg rviz_imu_topic) /rviz/imu/data"
+          output="screen"/>
+
+    <node pkg="topic_tools"
+          type="relay"
+          name="rviz_lidar_relay"
+          args="$(arg rviz_lidar_topic) /rviz/scan"
+          output="screen"/>
+
+    <node pkg="rviz"
+          type="rviz"
+          name="sim_real_sync_rviz"
+          args="-d $(arg rviz_config)"
+          output="screen"/>
+  </group>
 </launch>
