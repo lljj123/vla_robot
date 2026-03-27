@@ -3,7 +3,11 @@
   <arg name="urdf_dir" default="$(find sim_real_sync)/urdf"/>
   <arg name="urdf_file" default="robot.urdf.xacro"/>
   <arg name="robot_description_param" default="/robot_description"/>
-  <arg name="gazebo_model" default="burger"/>
+  <arg name="gazebo_world" default="$(find sim_real_sync)/worlds/demo.world"/>
+  <arg name="gazebo_entity_name" default="sim_sync_car"/>
+  <arg name="spawn_x" default="0.0"/>
+  <arg name="spawn_y" default="0.0"/>
+  <arg name="spawn_z" default="0.0"/>
   <arg name="launch_rviz" default="true"/>
   <arg name="rviz_config" default="$(find sim_real_sync)/rviz/sim_real_sync.rviz"/>
   <arg name="rviz_fixed_frame" default="map"/>
@@ -13,7 +17,7 @@
   <arg name="rviz_arm_joint_states_topic" default="/joint_states"/>
 
   <include file="$(find gazebo_ros)/launch/empty_world.launch">
-    <arg name="world_name" value="$(find turtlebot3_gazebo)/worlds/turtlebot3_world.world"/>
+    <arg name="world_name" value="$(arg gazebo_world)"/>
     <arg name="paused" value="false"/>
     <arg name="use_sim_time" value="true"/>
     <arg name="gui" value="true"/>
@@ -21,16 +25,13 @@
     <arg name="debug" value="false"/>
   </include>
 
-  <param name="gazebo_robot_description"
-         command="$(find xacro)/xacro --inorder $(find turtlebot3_description)/urdf/turtlebot3_$(arg gazebo_model).urdf.xacro"/>
+  <param name="robot_description" command="$(find xacro)/xacro $(arg urdf_dir)/$(arg urdf_file)"/>
 
   <node pkg="gazebo_ros"
         type="spawn_model"
         name="spawn_gazebo_model"
-        args="-urdf -model turtlebot3_$(arg gazebo_model) -x -2.0 -y -0.5 -z 0.0 -param gazebo_robot_description"
+        args="-urdf -model $(arg gazebo_entity_name) -x $(arg spawn_x) -y $(arg spawn_y) -z $(arg spawn_z) -param robot_description"
         output="screen"/>
-
-  <param name="robot_description" command="$(find xacro)/xacro $(arg urdf_dir)/$(arg urdf_file)"/>
 
   <group ns="sim_real_sync_rviz">
     <param name="camera_topic" value="$(arg rviz_camera_topic)"/>

@@ -13,3 +13,10 @@ RViz parameter hooks reserved in launch:
 - `rviz_imu_topic`
 - `rviz_lidar_topic`
 - `rviz_arm_joint_states_topic`
+
+Gazebo selection hooks:
+- `gazebo_world`
+- `gazebo_entity_name`
+- `spawn_x`
+- `spawn_y`
+- `spawn_z`
